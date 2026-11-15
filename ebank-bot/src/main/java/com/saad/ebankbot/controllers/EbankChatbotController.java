@@ -2,6 +2,7 @@ package com.saad.ebankbot.controllers;
 
 import com.saad.ebankbot.agents.EbankAiAgent;
 
+import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -17,10 +18,10 @@ public class EbankChatbotController {
     public EbankChatbotController(EbankAiAgent ebankAiAgent) {
         this.ebankAiAgent = ebankAiAgent;
     }
-
-    @GetMapping(value = "/chat" ,produces = MediaType.TEXT_PLAIN_VALUE)
-    public String chat(@RequestParam(name = "query", defaultValue = "bonjour" ) String query,
-                       @RequestParam(name = "conversationId", defaultValue = "default") String conversationId) {
-        return ebankAiAgent.chat(query,conversationId);
+    @GetMapping(value = "/chat", produces = MediaType.TEXT_PLAIN_VALUE)
+    public String chat(
+            @RequestParam(name = "query", defaultValue = "Bonjour") String query){
+        // shortcut: single shared conversation for the web endpoint, add a session/user id param if per-user memory is needed
+        return ebankAiAgent.chat(new Prompt(query), "web");
     }
 }
